@@ -81,9 +81,17 @@ func (twilio *Twilio) GetLookup(phoneNumber string, lookupOptions *LookupOptions
 	q := url.Values{}
 
 	if lookupOptions != nil {
-		q.Add("AddOns", lookupOptions.AddOns)
-		q.Add("CountryCode", lookupOptions.CountryCode)
-		q.Add("Type", string(lookupOptions.Type))
+		if lookupOptions.AddOns != "" {
+			q.Add("AddOns", lookupOptions.AddOns)
+		}
+
+		if lookupOptions.CountryCode != "" {
+			q.Add("CountryCode", lookupOptions.CountryCode)
+		}
+
+		if lookupOptions.Type != "" {
+			q.Add("Type", string(lookupOptions.Type))
+		}
 	}
 
 	res, err := twilio.getWithParams(twilioUrl, q.Encode())
