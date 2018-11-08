@@ -3,6 +3,7 @@ package gotwilio
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -73,7 +74,9 @@ type LookupResponse struct {
 // GetLookup uses twillio to get information about a phone number
 // See https://www.twilio.com/docs/lookup/api for more information.
 func (twilio *Twilio) GetLookup(phoneNumber string, lookupOptions *LookupOptions) (lookupResponse *LookupResponse, exception *Exception, err error) {
-	twilioUrl := twilio.LookupUrl + "/v1/PhoneNumbers/" + phoneNumber + ".json"
+	twilioUrl := twilio.LookupUrl + "/v1/PhoneNumbers/" + phoneNumber
+
+	log.Printf("Using URL: %s\n", twilioUrl)
 
 	q := url.Values{}
 
