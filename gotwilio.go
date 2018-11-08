@@ -11,6 +11,7 @@ import (
 const (
 	baseURL       = "https://api.twilio.com/2010-04-01"
 	videoURL      = "https://video.twilio.com"
+	lookupURL     = "https://lookups.twilio.com"
 	clientTimeout = time.Second * 30
 )
 
@@ -26,6 +27,7 @@ type Twilio struct {
 	AuthToken  string
 	BaseUrl    string
 	VideoUrl   string
+	LookupUrl  string
 	HTTPClient *http.Client
 
 	APIKeySid    string
@@ -56,6 +58,7 @@ func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Cl
 		AuthToken:  authToken,
 		BaseUrl:    baseURL,
 		VideoUrl:   videoURL,
+		LookupUrl:  lookupURL,
 		HTTPClient: HTTPClient,
 	}
 }
@@ -86,10 +89,17 @@ func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Respo
 }
 
 func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
+	return twilio.getWithParams(twilioUrl, "")
+}
+
+func (twilio *Twilio) getWithParams(twilioUrl string, queryParameters string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", twilioUrl, nil)
+	req.URL.RawQuery = queryParameters
+
 	if err != nil {
 		return nil, err
 	}
+
 	req.SetBasicAuth(twilio.getBasicAuthCredentials())
 
 	return twilio.do(req)
